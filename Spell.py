@@ -8,7 +8,7 @@ class Spell:
         self.__name = kwargs['name']
         self.__damage = kwargs['damage']
         self.__mana_cost = kwargs['mana_cost']
-        self.__cost_range = kwargs['cost_range']
+        self.__cast_range = kwargs['cast_range']
 
     @staticmethod
     def load_spell_from_file(filename):
@@ -16,12 +16,14 @@ class Spell:
             contents = f.read()
             data = json.loads(contents)
             str_spell = data[random.randint(0, len(data) - 1)]
-            return Spell(name=str_spell['name'], damage=str_spell['damage'], mana_cost=str_spell['mana_cost'], cost_range=str_spell['cost_range'])
+            return Spell(name=str_spell['name'], damage=str_spell['damage'], mana_cost=str_spell['mana_cost'], cast_range=str_spell['cast_range'])
 
     def prepare_json(self):
         data = {
             "name": self.__name,
-            "damage": self.__damage
+            "damage": self.__damage,
+            "mana_cost": self.__mana_cost,
+            "cast_range": self.__cast_range
         }
         return data
 
