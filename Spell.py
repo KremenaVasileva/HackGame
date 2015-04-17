@@ -31,6 +31,7 @@ class Spell:
         with open(filename, "w+") as f:
             f.write(json.dumps(self.prepare_json(), 4))
 
+# Getters
     def get_spell_damage(self):
         return self.__damage
 
