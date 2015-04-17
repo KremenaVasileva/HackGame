@@ -34,6 +34,12 @@ class Spell:
     def get_spell_damage(self):
         return self.__damage
 
+    def get_name(self):
+        return self.__name
+
+    def get_damage(self):
+        return self.__damage
+
     def get_cast_range(self):
         return self.__cast_range
 

@@ -26,3 +26,9 @@ class Weapon:
     def save(self, filename):
         with open(filename, "w+") as f:
             f.write(json.dumps(self.prepare_json(), 4))
+
+    def get_name(self):
+        return self.__name
+
+    def get_damage(self):
+        return self.__damage
