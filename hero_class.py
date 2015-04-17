@@ -18,4 +18,24 @@ class Hero:
         return self.mana
 
     def is_alive(self):
+        if self.health <= 0:
+            return False
+        else:
+            return True
+
+    def can_cast(self):
         pass
+
+    def take_damage(self, damage_points):
+        return max(0, self.health - damage_points)
+
+    def take_healing(self, healing_points):
+        return min(self.starting_health, self.health + healing_points)
+
+    def take_mana(self, *args):
+        if len(args) == 0:
+            mana_value = self.mana + self.mana_regeneration_rate
+            return min(mana_value, self.starting_mana)
+        else:
+            mana_value = self.mana + args[0]
+            return min(mana_value, self.starting_mana)
