@@ -35,7 +35,7 @@ class Hero:
     def take_mana(self, *args):
         if len(args) == 0:
             mana_value = self.mana + self.mana_regeneration_rate
-            return min(mana_value, self.starting_mana)
+            return min(self.starting_mana, mana_value)
         else:
             mana_value = self.mana + args[0]
-            return min(mana_value, self.starting_mana)
+            return min(self.starting_mana, mana_value)

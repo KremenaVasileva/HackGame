@@ -60,9 +60,9 @@ class TestHeroClass(unittest.TestCase):
     def test_take_mana_with_arg(self):
         self.assertEqual(100, self.hero.take_mana(20))
         self.hero.mana = 20
-        mana_points = 60
+        mana_points = 70
         needed_result = self.hero.mana + mana_points
-        self.assertEqual(needed_result, self.hero.take_mana(60))
+        self.assertEqual(needed_result, self.hero.take_mana(mana_points))
 
 if __name__ == '__main__':
     unittest.main()
