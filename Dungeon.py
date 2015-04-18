@@ -240,11 +240,15 @@ class Dungeon:
                 Treasure_generator.get_treasure(hero)
 
             if(is_enemy):
-                # Start Fighting Somehow!
-                pass
+                duel = self.hero_attack(hero)
+                if duel == -1:
+                    return -1
 
             self.__map[self.__hero_y][self.__hero_x] = 'H'
             # BLAAA
             return True
         else:
             return False
+
+
+# move връща True ако се е преместил, False, ако не и -1 ако е умрял :D
