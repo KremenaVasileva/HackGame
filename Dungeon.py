@@ -132,11 +132,13 @@ class Dungeon:
             for distance in range(-cast_range, cast_range + 1):
 
                 if self.__map[self.__hero_y][self.__hero_x + distance] == 'E':
+                    found_enemy = True
                     enemy_y = self.__hero_y
                     enemy_x = self.__hero_x + distance
                     break
 
                 if self.__map[self.__hero_y + distance][self.__hero_x] == 'E':
+                    found_enemy = True
                     enemy_y = self.__hero_y + distance
                     enemy_x = self.__hero_x
                     break
