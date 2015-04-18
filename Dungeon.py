@@ -102,12 +102,6 @@ class Dungeon:
 
     def hero_attack(self, hero):
 
-        # Checking if attack can be done:
-        if not hero.can_cast():
-            print('Not enough mana to cast magic!')
-            return 0
-
-        # if hero can make the attack, we start finding an enemy
         found_enemy = False
         enemy_x = -1
         enemy_y = -1
@@ -117,11 +111,18 @@ class Dungeon:
             enemy_x = self.__hero_x
             enemy_y = self.__hero_y
 
+        # Checking if attack can be done:
+        if not hero.can_cast() and not found_enemy:
+            print('Not enough mana to cast magic!')
+            return 0
+
+
+
         # We search for an enemy only on a straight line
         #       .........
         #       ....Y....
         #       ....Y....
-        #       .XXHXX.
+        #       ..XXHXX..
         #       ....Y....
         #       ....Y....
         #       .........
