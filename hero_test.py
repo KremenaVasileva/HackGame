@@ -1,4 +1,6 @@
 from hero_class import Hero
+from Weapon import Weapon
+from Spell import Spell
 import unittest
 
 
@@ -38,7 +40,9 @@ class TestHeroClass(unittest.TestCase):
         self.assertFalse(self.hero.is_alive())
 
     def test_can_cast(self):
-        pass
+        self.assertFalse(self.hero.can_cast())
+        self.hero.current_spell = Spell(mana_cost=50, damage=30, name="Fireball", cast_range=2)
+        self.assertTrue(self.hero.can_cast())
 
     def test_take_damage(self):
         needed_result = 100 - 60
@@ -63,6 +67,22 @@ class TestHeroClass(unittest.TestCase):
         mana_points = 70
         needed_result = self.hero.mana + mana_points
         self.assertEqual(needed_result, self.hero.take_mana(mana_points))
+
+    def test_attack_no_weapon(self):
+        self.assertEqual(0, self.hero.attack(by="weapon"))
+
+    def test_attack_with_weapon(self):
+        weapon = Weapon(name="The Axe of Destiny", damage=20)
+        self.hero.equip(weapon)
+        self.assertEqual(20, self.hero.attack(by="weapon"))
+
+    def test_attack_no_spell(self):
+        self.assertEqual(0, self.hero.attack(by="magic"))
+
+    def test_attack_with_spell(self):
+        spell = Spell(mana_cost=50, damage=30, name="Fireball", cast_range=2)
+        self.hero.learn(spell)
+        self.assertEqual(30, self.hero.attack(by="magic"))
 
 if __name__ == '__main__':
     unittest.main()
