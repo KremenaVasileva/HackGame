@@ -137,7 +137,7 @@ class Dungeon:
 
         # Вече имаме координатите на героя, сега ще го генерираме
         # и ще му дадем на случаен принцип оръжие и магия
-        enemy = self.__load_rand_enemy()
+        enemy = self.load_rand_enemy()
         enemy.equip(Weapon.load_weapon_from_file('weapons.json'))
         enemy.learn(Spell.load_spell_from_file('spells.json'))
 
