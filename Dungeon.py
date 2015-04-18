@@ -122,7 +122,7 @@ class Dungeon:
 
         while not found_enemy:
             cast_range = hero.current_spell.get_cast_range()
-            for distance in range(-cast_range, cast_range):
+            for distance in range(-cast_range, cast_range + 1):
 
                 if self.__map[self.__hero_y][self.__hero_x + distance] == 'E':
                     enemy_y = self.__hero_y
