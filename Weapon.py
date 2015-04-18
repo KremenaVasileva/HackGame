@@ -8,6 +8,9 @@ class Weapon:
         self.__name = kwargs['name']
         self.__damage = kwargs['damage']
 
+    def __str__(self):
+        return "Weapon {} with damage {}".format(self.__name, self.__damage)
+
     @staticmethod
     def load_weapon_from_file(filename):
         with open(filename) as f:
