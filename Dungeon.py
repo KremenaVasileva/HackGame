@@ -3,13 +3,10 @@ import json
 import random
 from Weapon import Weapon
 from Spell import Spell
+from enemy_class import Enemy
 
 
 class Wrong_direction(Exception):
-    pass
-
-
-class Enemy:
     pass
 
 
@@ -247,7 +244,7 @@ class Dungeon:
                 pass
 
             self.__map[self.__hero_y][self.__hero_x] = 'H'
-            #BLAAA
+            # BLAAA
             return True
         else:
             return False
