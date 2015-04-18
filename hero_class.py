@@ -21,15 +21,15 @@ class Hero(Creature):
         return "{} known as the {}".format(self.name, self.title)
 
     def take_healing(self, healing_points):
-        return min(self.starting_health, self.health + healing_points)
+        self.health = min(self.starting_health, self.health + healing_points)
 
     def take_mana(self, *args):
         if len(args) == 0:
             mana_value = self.mana + self.mana_regeneration_rate
-            return min(self.starting_mana, mana_value)
+            self.mana = min(self.starting_mana, mana_value)
         else:
             mana_value = self.mana + args[0]
-            return min(self.starting_mana, mana_value)
+            self.mana = min(self.starting_mana, mana_value)
 
     def attack(self, **kwargs):
         if kwargs['by'] == "weapon":
