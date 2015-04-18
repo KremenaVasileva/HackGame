@@ -1,6 +1,8 @@
 from Treasure_generator import Treasure_generator
 import json
 import random
+from Weapon import Weapon
+from Spell import Spell
 
 
 class Wrong_direction(Exception):
@@ -14,6 +16,8 @@ class Enemy:
 class Dungeon:
 
     def __init__(self, filename):
+
+        self.__level = filename[:-4]
         # Position of our hero
         # He's nowherer if x and y are -1
         self.__hero_x = -1
@@ -49,7 +53,8 @@ class Dungeon:
                         self.__enemies.append(coords)
                 self.__map.append(row[:-1])
 
-    def load_rand_enemy(filename):
+    def load_rand_enemy(self):
+        filename = self.__level + '__enemies.json'
         with open(filename) as f:
             contents = f.read()
             data = json.loads(contents)
@@ -92,6 +97,117 @@ class Dungeon:
             self.__map[self.__hero_y][self.__hero_x] = 'H'
             return True
 
+    def spell_or_weapon(self, creature):
+        if creature.can_cast() and creature.attack(by='magic') > creature.attack(by='weapon'):
+            return creature.current_spell
+        else:
+            return creature.current_weapon
+
+    def hero_attack(self, hero):
+
+        # Checking if attack can be done:
+        if not hero.can_cast():
+            print('Not enough mana to cast magic!')
+            return 0
+
+        # if hero can make the attack, we start finding an enemy
+        found_enemy = False
+        enemy_x = -1
+        enemy_y = -1
+
+        if self.__map[self.__hero_y][self.__hero_x] == 'E':
+            found_enemy = True
+            enemy_x = self.__hero_x
+            enemy_y = self.__hero_y
+
+        while not found_enemy:
+            cast_range = hero.current_spell.get_cast_range()
+            for distance in range(-cast_range, cast_range):
+
+                if self.__map[self.__hero_y][self.__hero_x + distance] == 'E':
+                    enemy_y = self.__hero_y
+                    enemy_x = self.__hero_x + distance
+                    break
+
+                if self.__map[self.__hero_y + distance][self.__hero_x] == 'E':
+                    enemy_y = self.__hero_y + distance
+                    enemy_x = self.__hero_x
+                    break
+
+        if not found_enemy:
+            print ('Nothing in range' + hero.current_spell.get_cast_range())
+            return 0
+
+        # Вече имаме координатите на героя, сега ще го генерираме
+        # и ще му дадем на случаен принцип оръжие и магия
+        enemy = self.__load_rand_enemy()
+        enemy.equip(Weapon.load_weapon_from_file('weapons.json'))
+        enemy.learn(Spell.load_spell_from_file('spells.json'))
+
+        # If we have found enemy, hero stats fighting until s.o. dies
+        while hero.is_alive() and enemy.is_alive():
+
+            # First move: Hero attacks
+            fighting_tool = self.spell_or_weapon(hero)
+            if isinstance(fighting_tool, Spell):
+                enemy.take_damage(hero.attack(by='magic'))
+                result = 'Hero casts a '
+                result += fighting_tool.get_name()
+                result += ', hits enemy for ' + hero.attack(by='magic')
+                result += '. Enemy health is ' + enemy.get_health()
+                print(result)
+            else:
+                enemy.take_damage(hero.attack(by='weapon'))
+                result = 'Hero hits with '
+                result += fighting_tool.get_name()
+                result += ' for ' + hero.attack(by='weapon')
+                result += '. Enemy health is ' + enemy.get_health()
+                print(result)
+
+            # Second move: enemy attacks or moves forward
+            # If enemy has reached hero:
+            if enemy_x == self.__hero_x and enemy_y == self.__hero_y:
+                fighting_tool = self.spell_or_weapon(enemy)
+                if isinstance(fighting_tool, Spell):
+                    hero.take_damage(enemy.attack(by='magic'))
+                    result = 'Enemy casts a '
+                    result += fighting_tool.get_name()
+                    result += ', hits hero for ' + enemy.attack(by='magic')
+                    result += '. Hero health is ' + hero.get_health()
+                    print(result)
+                else:
+                    hero.take_damage(enemy.attack(by='weapon'))
+                    result = 'Enemy hits with '
+                    result += fighting_tool.get_name()
+                    result += ' for ' + enemy.attack(by='weapon')
+                    result += '. Hero health is ' + hero.get_health()
+                    print(result)
+            else:
+                # Enemy has not reached hero, so he moves
+                moves = ''
+
+                if enemy_x > self.__hero_x:
+                    moves = 'to the left'
+                    enemy_x -= 1
+                elif enemy_x < self.__hero_x:
+                    moves = 'to the right'
+                    enemy_x += 1
+                elif enemy_y > self.__hero_y:
+                    moves = 'up'
+                    enemy_y -= 1
+                elif enemy_y < self.__hero_y:
+                    moves = 'down'
+                    enemy_y += 1
+                print('Enemy moves one square ' + moves + ' in order to get to the hero. This is his move.')
+
+        # Someone has died, let's check who
+        if not hero.is_alive():
+            print('Hero is dead')
+            return -1
+        else:
+            print('Enemy is dead')
+            return 1
+
     def move_hero(self, hero, direction):
 
         dx = 0
@@ -120,7 +236,7 @@ class Dungeon:
             self.__map[self.__hero_y][self.__hero_x] = '.'
             self.__hero_x += dx
             self.__hero_y += dy
-            self.__map[self.__hero_y][self.__hero_x] = 'H'
+
             hero.take_mana()
 
             if(is_treasure):
@@ -130,6 +246,7 @@ class Dungeon:
                 # Start Fighting Somehow!
                 pass
 
+            self.__map[self.__hero_y][self.__hero_x] = 'H'
             #BLAAA
             return True
         else:
