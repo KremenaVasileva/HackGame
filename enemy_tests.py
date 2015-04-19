@@ -34,9 +34,11 @@ class TestEnemyClass(unittest.TestCase):
 
     def test_take_damage(self):
         needed_result = 200 - 40  # current_health - the damage taken
-        self.assertEqual(needed_result, self.enemy.take_damage(40))
+        self.enemy.take_damage(40)
+        self.assertEqual(needed_result, self.enemy.get_health())
         # health cannot be less than 0
-        self.assertEqual(0, self.enemy.take_damage(250))
+        self.enemy.take_damage(2500)
+        self.assertEqual(0, self.enemy.get_health())
 
 if __name__ == '__main__':
     unittest.main()
