@@ -10,6 +10,9 @@ class Spell:
         self.__mana_cost = kwargs['mana_cost']
         self.__cast_range = kwargs['cast_range']
 
+    def __str__(self):
+        return "Weapon {} with damage {}, mana cost {}, cast range {}".format(self.__name, self.__damage, self.__mana_cost, self.__cast_range)
+
     @staticmethod
     def load_spell_from_file(filename):
         with open(filename) as f:

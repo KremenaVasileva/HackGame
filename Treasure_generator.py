@@ -11,26 +11,33 @@ class Treasure_generator:
         rand = random.randint(1, 4)
 
         if rand == 1:
-            mana_points = random.randint(hero.__mana)
+            # hero.get_starting_mana()
+            mana_points = random.randint(10, 200)
             hero.take_mana(mana_points)
 
-            if hero.get_mana() == hero.__starting_mana:
+            if hero.get_mana() == hero.starting_mana:
                 print('Found mana. Hero mana is max.')
             else:
                 print('Found mana. Hero mana is {}').format(hero.get_mana())
 
         elif rand == 2:
-            health_points = random.randint(hero.__health)
+            health_points = random.randint(10, 20)
             hero.take_healing(health_points)
 
-            if hero.get_health() == hero.__starting_health:
+            if hero.get_health() == hero.starting_health:
                 print('Found health. Hero health is max.')
             else:
                 print('Found health. Hero health is {}').format(
                     hero.get_health())
 
         elif rand == 3:
-            hero.equip(Weapon.get_random_weapon())
+            w = Weapon.load_weapon_from_file('weapons.json')
+            print('Hero took:')
+            print(w)
+            hero.equip(w)
 
         else:
-            hero.learn(Spell.get_random_spell())
+            s = Spell.load_spell_from_file('spells.json')
+            print('Hero learnt')
+            print(s)
+            hero.learn()
