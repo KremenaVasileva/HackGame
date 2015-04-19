@@ -44,33 +44,42 @@ class TestHeroClass(unittest.TestCase):
         self.hero.current_spell = Spell(mana_cost=50, damage=30, name="Fireball", cast_range=2)
         self.assertTrue(self.hero.can_cast())
 
-    # def test_take_damage(self):
-    #     needed_result = 100 - 60  # current_health - damage taken
-    #     self.assertEqual(needed_result, self.hero.take_damage(60))
-    #     # hero health cannot be less than 0
-    #     self.assertEqual(0, self.hero.take_damage(120))
+    def test_take_damage(self):
+        needed_result = 100 - 60  # current_health - damage taken
+        self.hero.take_damage(60)
+        self.assertEqual(needed_result, self.hero.get_health())
+        # hero health cannot be less than 0
+        self.hero.take_damage(2000)
+        self.assertEqual(0, self.hero.get_health())
 
-    # def test_take_healing(self):
-    #     # hero's current_health cannot be over his starting_health
-    #     self.assertEqual(100, self.hero.take_healing(20))
-    #     self.hero.health = 20
-    #     needed_result = 20 + 50  # current_health + healing taken
-    #     self.assertEqual(needed_result, self.hero.take_healing(50))
+    def test_take_healing(self):
+        # hero's current_health cannot be over his starting_healthe
+        self.hero.take_healing(20)
+        self.assertEqual(100, self.hero.get_health())
+        self.hero.health = 20
+        needed_result = 20 + 50  # current_health + healing taken
+        self.hero.take_healing(50)
+        self.assertEqual(needed_result, self.hero.get_health())
 
-    # def test_take_mana_no_args(self):
-    #     # hero's current_mana cannot be over his starting_mana
-    #     self.assertEqual(100, self.hero.take_mana())
-    #     self.hero.mana = 90
-    #     needed_result = self.hero.mana + self.hero.mana_regeneration_rate
-    #     self.assertEqual(needed_result, self.hero.take_mana())
+    def test_take_mana_no_args(self):
+        # hero's current_mana cannot be over his starting_mana
+        self.hero.take_mana()
+        self.assertEqual(100, self.hero.get_mana())
+        self.hero.mana = 90
+        needed_result = self.hero.get_mana() + self.hero.mana_regeneration_rate
+        self.hero.take_mana()
+        self.assertEqual(needed_result, self.hero.get_mana())
 
-    # def test_take_mana_with_arg(self):
-    #     # hero's current_mana cannot be over his starting_mana
-    #     self.assertEqual(100, self.hero.take_mana(20))
-    #     self.hero.mana = 20
-    #     mana_points = 70
-    #     needed_result = self.hero.mana + mana_points
-    #     self.assertEqual(needed_result, self.hero.take_mana(mana_points))
+    def test_take_mana_with_arg(self):
+        # hero's current_mana cannot be over his starting_mana
+        self.hero.take_mana(20)
+        self.assertEqual(100, self.hero.get_mana())
+
+        self.hero.mana = 20
+        mana_points = 70
+        needed_result = self.hero.get_mana() + mana_points
+        self.hero.take_mana(mana_points)
+        self.assertEqual(needed_result, self.hero.get_mana())
 
     def test_attack_no_weapon(self):
         self.assertEqual(0, self.hero.attack(by="weapon"))
