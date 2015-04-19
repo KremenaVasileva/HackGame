@@ -32,8 +32,11 @@ class TestCreatureClass(unittest.TestCase):
     def test_take_damage(self):
         damage_points = 60
         needed_result = self.creature.get_health() - damage_points
-        self.assertEqual(needed_result, self.creature.take_damage(60))
-        self.assertEqual(0, self.creature.take_damage(220))
+        self.creature.take_damage(60)
+        self.assertEqual(needed_result, self.creature.get_health())
+        # assert that the health does not go below 0
+        self.creature.take_damage(2000)
+        self.assertEqual(0, self.creature.get_health())
 
 if __name__ == '__main__':
     unittest.main()

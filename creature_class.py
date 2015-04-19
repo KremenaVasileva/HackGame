@@ -25,7 +25,7 @@ class Creature:
             return (self.get_mana() - spell_damage)
 
     def take_damage(self, damage_points):
-        return max(0, self.health - damage_points)
+        self.health = max(0, self.health - damage_points)
 
     def equip(self, weapon):
         self.current_weapon = weapon
