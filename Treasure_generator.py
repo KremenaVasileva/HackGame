@@ -40,4 +40,4 @@ class Treasure_generator:
             s = Spell.load_spell_from_file('spells.json')
             print('Hero learnt')
             print(s)
-            hero.learn()
+            hero.learn(s)
