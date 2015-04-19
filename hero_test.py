@@ -45,28 +45,41 @@ class TestHeroClass(unittest.TestCase):
         self.assertTrue(self.hero.can_cast())
 
     def test_take_damage(self):
-        needed_result = 100 - 60
-        self.assertEqual(needed_result, self.hero.take_damage(60))
-        self.assertEqual(0, self.hero.take_damage(120))
+        needed_result = 100 - 60  # current_health - damage taken
+        self.hero.take_damage(60)
+        self.assertEqual(needed_result, self.hero.get_health())
+        # hero health cannot be less than 0
+        self.hero.take_damage(2000)
+        self.assertEqual(0, self.hero.get_health())
 
     def test_take_healing(self):
-        self.assertEqual(100, self.hero.take_healing(20))
+        # hero's current_health cannot be over his starting_healthe
+        self.hero.take_healing(20)
+        self.assertEqual(100, self.hero.get_health())
         self.hero.health = 20
-        needed_result = 20 + 50
-        self.assertEqual(needed_result, self.hero.take_healing(50))
+        needed_result = 20 + 50  # current_health + healing taken
+        self.hero.take_healing(50)
+        self.assertEqual(needed_result, self.hero.get_health())
 
     def test_take_mana_no_args(self):
-        self.assertEqual(100, self.hero.take_mana())
+        # hero's current_mana cannot be over his starting_mana
+        self.hero.take_mana()
+        self.assertEqual(100, self.hero.get_mana())
         self.hero.mana = 90
-        needed_result = self.hero.mana + self.hero.mana_regeneration_rate
-        self.assertEqual(needed_result, self.hero.take_mana())
+        needed_result = self.hero.get_mana() + self.hero.mana_regeneration_rate
+        self.hero.take_mana()
+        self.assertEqual(needed_result, self.hero.get_mana())
 
     def test_take_mana_with_arg(self):
-        self.assertEqual(100, self.hero.take_mana(20))
+        # hero's current_mana cannot be over his starting_mana
+        self.hero.take_mana(20)
+        self.assertEqual(100, self.hero.get_mana())
+
         self.hero.mana = 20
         mana_points = 70
-        needed_result = self.hero.mana + mana_points
-        self.assertEqual(needed_result, self.hero.take_mana(mana_points))
+        needed_result = self.hero.get_mana() + mana_points
+        self.hero.take_mana(mana_points)
+        self.assertEqual(needed_result, self.hero.get_mana())
 
     def test_attack_no_weapon(self):
         self.assertEqual(0, self.hero.attack(by="weapon"))
