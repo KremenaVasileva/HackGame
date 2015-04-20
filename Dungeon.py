@@ -51,7 +51,11 @@ class Dungeon:
                 self.__map.append(row[:-1])
 
     def load_rand_enemy(self):
+<<<<<<< HEAD
         filename = self.__level + '__enemies.json'
+=======
+        filename = self.__level + '_enemies.json'
+>>>>>>> Dungeon-Spell-Weapon-Treasure
         with open(filename) as f:
             contents = f.read()
             data = json.loads(contents)
@@ -154,7 +158,12 @@ class Dungeon:
         enemy.learn(Spell.load_spell_from_file('spells.json'))
 
         # If we have found enemy, hero stats fighting until s.o. dies
+<<<<<<< HEAD
         while hero.is_alive() and enemy.is_alive():
+=======
+        isFightingOn = hero.is_alive() and enemy.is_alive()
+        while isFightingOn:
+>>>>>>> Dungeon-Spell-Weapon-Treasure
 
             # First move: Hero attacks
             fighting_tool = self.spell_or_weapon(hero)
@@ -162,17 +171,33 @@ class Dungeon:
                 enemy.take_damage(hero.attack(by='magic'))
                 result = 'Hero casts a '
                 result += fighting_tool.get_name()
+<<<<<<< HEAD
                 result += ', hits enemy for ' + hero.attack(by='magic')
                 result += '. Enemy health is ' + enemy.get_health()
+=======
+                result += ', hits enemy for ' + str(hero.attack(by='magic'))
+                result += '. Enemy health is ' + str(enemy.get_health())
+>>>>>>> Dungeon-Spell-Weapon-Treasure
                 print(result)
             else:
                 enemy.take_damage(hero.attack(by='weapon'))
                 result = 'Hero hits with '
                 result += fighting_tool.get_name()
+<<<<<<< HEAD
                 result += ' for ' + hero.attack(by='weapon')
                 result += '. Enemy health is ' + enemy.get_health()
                 print(result)
 
+=======
+                result += ' for ' + str(hero.attack(by='weapon'))
+                result += '. Enemy health is ' + str(enemy.get_health())
+                print(result)
+
+            isFightingOn = hero.is_alive() and enemy.is_alive()
+            if not isFightingOn:
+                    break
+
+>>>>>>> Dungeon-Spell-Weapon-Treasure
             # Second move: enemy attacks or moves forward
             # If enemy has reached hero:
             if enemy_x == self.__hero_x and enemy_y == self.__hero_y:
@@ -181,20 +206,34 @@ class Dungeon:
                     hero.take_damage(enemy.attack(by='magic'))
                     result = 'Enemy casts a '
                     result += fighting_tool.get_name()
+<<<<<<< HEAD
                     result += ', hits hero for ' + enemy.attack(by='magic')
                     result += '. Hero health is ' + hero.get_health()
+=======
+                    result += ', hits hero for ' + str(enemy.attack(by='magic'))
+                    result += '. Hero health is ' + str(hero.get_health())
+>>>>>>> Dungeon-Spell-Weapon-Treasure
                     print(result)
                 else:
                     hero.take_damage(enemy.attack(by='weapon'))
                     result = 'Enemy hits with '
                     result += fighting_tool.get_name()
+<<<<<<< HEAD
                     result += ' for ' + enemy.attack(by='weapon')
                     result += '. Hero health is ' + hero.get_health()
+=======
+                    result += ' for ' + str(enemy.attack(by='weapon'))
+                    result += '. Hero health is ' + str(hero.get_health())
+>>>>>>> Dungeon-Spell-Weapon-Treasure
                     print(result)
             else:
                 # Enemy has not reached hero, so he moves
                 moves = ''
+<<<<<<< HEAD
 
+=======
+                self.__map[enemy_y][enemy_x] = '.'
+>>>>>>> Dungeon-Spell-Weapon-Treasure
                 if enemy_x > self.__hero_x:
                     moves = 'to the left'
                     enemy_x -= 1
@@ -207,14 +246,30 @@ class Dungeon:
                 elif enemy_y < self.__hero_y:
                     moves = 'down'
                     enemy_y += 1
+<<<<<<< HEAD
                 print('Enemy moves one square ' + moves + ' in order to get to the hero. This is his move.')
 
         # Someone has died, let's check who
         if not hero.is_alive():
+=======
+                self.__map[enemy_y][enemy_x] = 'E'
+                print('Enemy moves one square ' + moves + ' in order to get to the hero. This is his move.')
+            isFightingOn = hero.is_alive() and enemy.is_alive()
+            if not isFightingOn:
+                    break
+
+        # Someone has died, let's check who
+        if not hero.is_alive():
+            self.__map[self.__hero_y][self.__hero_x] = 'E'
+>>>>>>> Dungeon-Spell-Weapon-Treasure
             print('Hero is dead')
             return -1
         else:
             print('Enemy is dead')
+<<<<<<< HEAD
+=======
+            self.__map[self.__hero_y][self.__hero_x] = 'H'
+>>>>>>> Dungeon-Spell-Weapon-Treasure
             return 1
 
     def move_hero(self, hero, direction):
@@ -254,7 +309,11 @@ class Dungeon:
             if(is_enemy):
                 duel = self.hero_attack(hero)
                 if duel == -1:
+<<<<<<< HEAD
                     return -1
+=======
+                    return False
+>>>>>>> Dungeon-Spell-Weapon-Treasure
 
             self.__map[self.__hero_y][self.__hero_x] = 'H'
             # BLAAA
