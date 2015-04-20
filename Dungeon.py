@@ -264,7 +264,7 @@ class Dungeon:
 
 
 # move връща True ако се е преместил, False, ако не и -1 ако е умрял :D
-    def finding_enemy(cast_range):
+    def finding_enemy(self, cast_range):
         for distance in range(0, cast_range + 1):
 
             current_char_right = self.__map[
