@@ -15,7 +15,7 @@ class Hero(Creature):
         self.starting_mana = kwargs['mana']
 
         self.current_spell = None
-        self.current_weapon = None
+        self.current_weapon = Weapon(name="Hands", damaga=20)
 
     def known_as(self):
         return "{} known as the {}".format(self.name, self.title)
