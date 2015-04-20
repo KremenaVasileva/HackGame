@@ -52,6 +52,7 @@ if __name__ == '__main__':
             # if our hero (has beaten all its enemies and) is at G
             if is_at_gate:
                 game_dungeon = Dungeon.load_from_file("level2.txt")
+                game_dungeon.spawn(our_hero)
 
         print("Game over .. :(")
 
