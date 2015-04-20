@@ -108,7 +108,7 @@ class Dungeon:
             self.__hero_y = self.__spawning_points[0][0]
             self.__hero_x = self.__spawning_points[0][1]
             self.__spawning_points = self.__spawning_points[1:]
-            self.__map[self.__hero_y][self.__hero_x] = 'H'
+            self.__map[self.__hero_y][self.__hero_x] = Dungeon.hero_char
             return True
 
     def spell_or_weapon(self, creature):
@@ -202,7 +202,7 @@ class Dungeon:
             else:
                 # Enemy has not reached hero, so he moves
                 moves = ''
-                self.__map[enemy_y][enemy_x] = '.'
+                self.__map[enemy_y][enemy_x] = Dungeon.path_char
                 if enemy_x > self.__hero_x:
                     moves = 'to the left'
                     enemy_x -= 1
@@ -215,7 +215,7 @@ class Dungeon:
                 elif enemy_y < self.__hero_y:
                     moves = 'down'
                     enemy_y += 1
-                self.__map[enemy_y][enemy_x] = 'E'
+                self.__map[enemy_y][enemy_x] = Dungeon.enemy_char
                 print('Enemy moves one square ' + moves +
                       ' in order to get to the hero. This is his move.')
             isFightingOn = hero.is_alive() and enemy.is_alive()
@@ -224,12 +224,12 @@ class Dungeon:
 
         # Someone has died, let's check who
         if not hero.is_alive():
-            self.__map[self.__hero_y][self.__hero_x] = 'E'
+            self.__map[self.__hero_y][self.__hero_x] = Dungeon.enemy_char
             print('Hero is dead')
             return -1
         else:
             print('Enemy is dead')
-            self.__map[self.__hero_y][self.__hero_x] = 'H'
+            self.__map[self.__hero_y][self.__hero_x] = Dungeon.hero_char
             return 1
 
     def move_hero(self, hero, direction):
@@ -264,7 +264,7 @@ class Dungeon:
         is_accessible = is_dot or is_treasure or is_enemy or is_gate
 
         if is_in_matrix and is_accessible:
-            self.__map[self.__hero_y][self.__hero_x] = '.'
+            self.__map[self.__hero_y][self.__hero_x] = Dungeon.path_char
             self.__hero_x += dx
             self.__hero_y += dy
 
@@ -275,12 +275,13 @@ class Dungeon:
 
             if(is_enemy):
                 self.hero_attack(hero)
+                return False
 
             if(is_gate):
                 # If move hero returns True, we load new level
                 return True
 
-            self.__map[self.__hero_y][self.__hero_x] = 'H'
+            self.__map[self.__hero_y][self.__hero_x] = Dungeon.hero_char
             # BLAAA
 
         return False
