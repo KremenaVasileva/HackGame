@@ -2,6 +2,9 @@ from hero_class import Hero
 from enemy_class import Enemy
 from Dungeon import Dungeon
 
+import os
+
+
 if __name__ == '__main__':
     our_hero = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
     game_dungeon = Dungeon.load_from_file("level1.txt")
@@ -28,10 +31,11 @@ if __name__ == '__main__':
         game_dungeon.spawn(our_hero)
 
         while our_hero.is_alive() or game_dungeon.spawn(our_hero):
+
             game_dungeon.print_map()
 
             player_move = input("Choose your move: ")
-
+            os.system('cls' if os.name == 'nt' else 'clear')
             is_at_gate = False
 
             if player_move == "W" or player_move == "w":
