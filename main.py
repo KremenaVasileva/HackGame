@@ -32,30 +32,28 @@ if __name__ == '__main__':
 
             player_move = input("Choose your move: ")
 
+            is_at_gate = False
+
             if player_move == "W" or player_move == "w":
-                game_dungeon.move_hero(our_hero, "up")
+                is_at_gate = game_dungeon.move_hero(our_hero, "up")
 
             elif player_move == "A" or player_move == "a":
-                game_dungeon.move_hero(our_hero, "left")
+                is_at_gate = game_dungeon.move_hero(our_hero, "left")
 
             elif player_move == "S" or player_move == "s":
-                game_dungeon.move_hero(our_hero, "down")
+                is_at_gate = game_dungeon.move_hero(our_hero, "down")
 
             elif player_move == "D" or player_move == "d":
-                game_dungeon.move_hero(our_hero, "right")
+                is_at_gate = game_dungeon.move_hero(our_hero, "right")
 
             elif player_move == "L" or player_move == "l":
                 game_dungeon.hero_attack(our_hero)
 
-            # if our hero has beaten all its enemies and is at G
-            if True:
-                pass
+            # if our hero (has beaten all its enemies and) is at G
+            if is_at_gate:
+                game_dungeon = Dungeon.load_from_file("level2.txt")
 
-        if our_hero.is_alive():
-            print("Great job! You can now go to the next level! ;)")
-
-        else:
-            print("Game over .. :(")
+        print("Game over .. :(")
 
     else:
         print("\nWhy the *** you no wanna start a game?! ;(")
