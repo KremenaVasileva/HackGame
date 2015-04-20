@@ -22,7 +22,7 @@ class Creature:
             return False
         else:
             spell_damage = (self.current_spell).get_damage()
-            return (self.get_mana() - spell_damage)
+            return (self.get_mana() - spell_damage) >= 0
 
     def take_damage(self, damage_points):
         self.health = max(0, self.health - damage_points)
