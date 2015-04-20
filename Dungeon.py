@@ -12,25 +12,25 @@ class Wrong_direction(Exception):
 
 class Dungeon:
 
-    def __init__(self, filename):
+    hero_char = 'H'
+    treasure_char = 'T'
+    rocks_char = '#'
+    path_char = '.'
+    gate_char = 'G'
+    enemy_char = 'E'
+    spawning_char = 'S'
 
-        self.hero_char = 'H'
-        self.treasure_char = 'T'
-        self.rocks_char = '#'
-        self.path_char = '.'
-        self.gate_char = 'G'
-        self.enemy_char = 'E'
-        self.spawning_char = 'S'
+    @staticmethod
+    def load_from_file(filename):
 
-        self.__level = filename[:-4]
         # Position of our hero
         # He's nowherer if x and y are -1
-        self.__hero_x = -1
-        self.__hero_y = -1
-        self.__map = []
-        self.__spawning_points = []
+        hero_x = -1
+        hero_y = -1
+        level_map = []
+        spawning_points = []
         # Coordinates of enemies
-        self.__enemies = []
+        enemies = []
         # making matrix
         j = -1
         with open(filename, "r") as f:
@@ -42,21 +42,30 @@ class Dungeon:
                     i += 1
                     row.append(char)
                     # Finding hero's first spawning points coordinates
-                    if char == 'S':
+                    if char == Dungeon.spawning_char:
                         coords = []
                         # Y
                         coords.append(j)
                         # X
                         coords.append(i)
-                        self.__spawning_points.append(coords)
-                    elif char == 'E':
+                        spawning_points.append(coords)
+                    elif char == Dungeon.enemy_char:
                         coords = []
                         # Y
                         coords.append(j)
                         # X
                         coords.append(i)
-                        self.__enemies.append(coords)
-                self.__map.append(row[:-1])
+                        enemies.append(coords)
+                level_map.append(row[:-1])
+            return Dungeon(hero_x, hero_y, level_map, spawning_points, enemies)
+
+    def __init__(self, x, y, level_map, spawning_points, enemies):
+        self.__hero_x = x
+        self.__hero_y = y
+        self.__map = level_map
+        self.__spawning_points = spawning_points
+        # Coordinates of enemies
+        self.__enemies = enemies
 
     def load_rand_enemy(self):
         filename = self.__level + '_enemies.json'
@@ -122,17 +131,23 @@ class Dungeon:
 
         # Checking if attack can be done:
         if not hero.can_cast() and not found_enemy:
-            print('Not enough mana to cast magic!')
+            print('Cannot cast magic!')
             return 0
 
         # while not found_enemy:
-        cast_range = hero.current_spell.get_cast_range()
+        if hero.current_spell is None:
+            cast_range = 0
+        else:
+            cast_range = hero.current_spell.get_cast_range()
         enemy_cords = self.finding_enemy(cast_range)
         found_enemy = len(enemy_cords) != 0
 
         if not found_enemy:
             print ('Nothing in range' + hero.current_spell.get_cast_range())
             return 0
+
+        enemy_y = enemy_cords[0]
+        enemy_x = enemy_cords[1]
 
         # Вече имаме координатите на героя, сега ще го генерираме
         # и ще му дадем на случаен принцип оръжие и магия
@@ -233,11 +248,16 @@ class Dungeon:
         else:
             raise Wrong_direction
 
+        is_dot = False
+        is_treasure = False
+        is_enemy = False
+
         is_in_matrix = self.__hero_x + \
             dx < len(self.__map[0]) and self.__hero_y + dy < len(self.__map)
-        is_dot = self.__map[self.__hero_y + dy][self.__hero_x + dx] == '.'
-        is_treasure = self.__map[self.__hero_y + dy][self.__hero_x + dx] == 'T'
-        is_enemy = self.__map[self.__hero_y + dy][self.__hero_x + dx] == 'E'
+        if is_in_matrix:
+            is_dot = self.__map[self.__hero_y + dy][self.__hero_x + dx] == self.path_char
+            is_treasure = self.__map[self.__hero_y + dy][self.__hero_x + dx] == self.treasure_char
+            is_enemy = self.__map[self.__hero_y + dy][self.__hero_x + dx] == self.enemy_char
 
         is_accessible = is_dot or is_treasure or is_enemy
 
