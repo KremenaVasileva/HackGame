@@ -1,9 +1,0 @@
-<<<<<<< HEAD
-S.##.....T
-=======
-S.##..S..T
->>>>>>> Dungeon-Spell-Weapon-Treasure
-#T##..###.
-#.###E###E
-#.E...###.
-###T#####G
