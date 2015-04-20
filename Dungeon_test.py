@@ -72,6 +72,11 @@ class Test_Dungeon(unittest.TestCase):
         self.map.print_map()
         self.map.spawn(self.h)
         self.map.print_map()
+        self.map.move_hero(self.h, 'left')
+        self.map.move_hero(self.h, 'down')
+        self.map.move_hero(self.h, 'down')
+        self.map.print_map()
+
 
 if __name__ == '__main__':
     unittest.main()
