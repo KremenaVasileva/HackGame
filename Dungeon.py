@@ -251,6 +251,7 @@ class Dungeon:
         is_dot = False
         is_treasure = False
         is_enemy = False
+        is_gate = False
 
         is_in_matrix = self.__hero_x + \
             dx < len(self.__map[0]) and self.__hero_y + dy < len(self.__map)
@@ -258,8 +259,9 @@ class Dungeon:
             is_dot = self.__map[self.__hero_y + dy][self.__hero_x + dx] == Dungeon.path_char
             is_treasure = self.__map[self.__hero_y + dy][self.__hero_x + dx] == Dungeon.treasure_char
             is_enemy = self.__map[self.__hero_y + dy][self.__hero_x + dx] == Dungeon.enemy_char
+            is_gate = self.__map[self.__hero_y + dy][self.__hero_x + dx] == Dungeon.gate_char
 
-        is_accessible = is_dot or is_treasure or is_enemy
+        is_accessible = is_dot or is_treasure or is_enemy or is_gate
 
         if is_in_matrix and is_accessible:
             self.__map[self.__hero_y][self.__hero_x] = '.'
@@ -272,15 +274,16 @@ class Dungeon:
                 Treasure_generator.get_treasure(hero)
 
             if(is_enemy):
-                duel = self.hero_attack(hero)
-                if duel == -1:
-                    return False
+                self.hero_attack(hero)
+
+            if(is_gate):
+                # If move hero returns True, we load new level
+                return True
 
             self.__map[self.__hero_y][self.__hero_x] = 'H'
             # BLAAA
-            return True
-        else:
-            return False
+
+        return False
 
 
 # move връща True ако се е преместил, False, ако не и -1 ако е умрял :D
