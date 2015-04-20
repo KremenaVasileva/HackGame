@@ -68,7 +68,7 @@ class Dungeon:
         self.__enemies = enemies
 
     def load_rand_enemy(self):
-        filename = self.__level + '_enemies.json'
+        filename = 'enemies.json'
         with open(filename) as f:
             contents = f.read()
             data = json.loads(contents)
@@ -124,7 +124,7 @@ class Dungeon:
         enemy_y = -1
 
         # Дали сме на едно квадратче
-        if self.__map[self.__hero_y][self.__hero_x] == self.enemy_char:
+        if self.__map[self.__hero_y][self.__hero_x] == Dungeon.enemy_char:
             found_enemy = True
             enemy_x = self.__hero_x
             enemy_y = self.__hero_y
@@ -255,9 +255,9 @@ class Dungeon:
         is_in_matrix = self.__hero_x + \
             dx < len(self.__map[0]) and self.__hero_y + dy < len(self.__map)
         if is_in_matrix:
-            is_dot = self.__map[self.__hero_y + dy][self.__hero_x + dx] == self.path_char
-            is_treasure = self.__map[self.__hero_y + dy][self.__hero_x + dx] == self.treasure_char
-            is_enemy = self.__map[self.__hero_y + dy][self.__hero_x + dx] == self.enemy_char
+            is_dot = self.__map[self.__hero_y + dy][self.__hero_x + dx] == Dungeon.path_char
+            is_treasure = self.__map[self.__hero_y + dy][self.__hero_x + dx] == Dungeon.treasure_char
+            is_enemy = self.__map[self.__hero_y + dy][self.__hero_x + dx] == Dungeon.enemy_char
 
         is_accessible = is_dot or is_treasure or is_enemy
 
@@ -304,7 +304,7 @@ class Dungeon:
             is_stopped_down = False
             is_stopped_up = False
 
-            if current_char_left == self.enemy_char and not is_stopped_left:
+            if current_char_left == Dungeon.enemy_char and not is_stopped_left:
                 enemy_y = self.__hero_y
                 enemy_x = self.__hero_x - distance
                 return [enemy_y, enemy_x]
@@ -312,7 +312,15 @@ class Dungeon:
             if current_char_left == self.rocks_char:
                 is_stopped_left = True
 
-            if current_char_down == self.enemy_char and not is_stopped_down:
+            if current_char_right == Dungeon.enemy_char and not is_stopped_right:
+                enemy_y = self.__hero_y
+                enemy_x = self.__hero_x + distance
+                return [enemy_y, enemy_x]
+
+            if current_char_right == self.rocks_char:
+                is_stopped_right = True
+
+            if current_char_down == Dungeon.enemy_char and not is_stopped_down:
                 enemy_y = self.__hero_y + distance
                 enemy_x = self.__hero_x
                 return [enemy_y, enemy_x]
@@ -320,7 +328,7 @@ class Dungeon:
             if current_char_down == self.rocks_char:
                 is_stopped_down = True
 
-            if current_char_up == self.enemy_char and not is_stopped_up:
+            if current_char_up == Dungeon.enemy_char and not is_stopped_up:
                 enemy_y = self.__hero_y - distance
                 enemy_x = self.__hero_x
                 return [enemy_y, enemy_x]
