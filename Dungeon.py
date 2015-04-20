@@ -14,6 +14,14 @@ class Dungeon:
 
     def __init__(self, filename):
 
+        self.hero_char = 'H'
+        self.treasure_char = 'T'
+        self.rocks_char = '#'
+        self.path_char = '.'
+        self.gate_char = 'G'
+        self.enemy_char = 'E'
+        self.spawning_char = 'S'
+
         self.__level = filename[:-4]
         # Position of our hero
         # He's nowherer if x and y are -1
@@ -106,7 +114,8 @@ class Dungeon:
         enemy_x = -1
         enemy_y = -1
 
-        if self.__map[self.__hero_y][self.__hero_x] == 'E':
+        # Дали сме на едно квадратче
+        if self.__map[self.__hero_y][self.__hero_x] == self.enemy_char:
             found_enemy = True
             enemy_x = self.__hero_x
             enemy_y = self.__hero_y
@@ -116,32 +125,10 @@ class Dungeon:
             print('Not enough mana to cast magic!')
             return 0
 
-
-
-        # We search for an enemy only on a straight line
-        #       .........
-        #       ....Y....
-        #       ....Y....
-        #       ..XXHXX..
-        #       ....Y....
-        #       ....Y....
-        #       .........
-
-        while not found_enemy:
-            cast_range = hero.current_spell.get_cast_range()
-            for distance in range(-cast_range, cast_range + 1):
-
-                if self.__map[self.__hero_y][self.__hero_x + distance] == 'E':
-                    found_enemy = True
-                    enemy_y = self.__hero_y
-                    enemy_x = self.__hero_x + distance
-                    break
-
-                if self.__map[self.__hero_y + distance][self.__hero_x] == 'E':
-                    found_enemy = True
-                    enemy_y = self.__hero_y + distance
-                    enemy_x = self.__hero_x
-                    break
+        # while not found_enemy:
+        cast_range = hero.current_spell.get_cast_range()
+        enemy_cords = self.finding_enemy(cast_range)
+        found_enemy = len(enemy_cords) != 0
 
         if not found_enemy:
             print ('Nothing in range' + hero.current_spell.get_cast_range())
@@ -176,7 +163,7 @@ class Dungeon:
 
             isFightingOn = hero.is_alive() and enemy.is_alive()
             if not isFightingOn:
-                    break
+                break
 
             # Second move: enemy attacks or moves forward
             # If enemy has reached hero:
@@ -186,7 +173,8 @@ class Dungeon:
                     hero.take_damage(enemy.attack(by='magic'))
                     result = 'Enemy casts a '
                     result += fighting_tool.get_name()
-                    result += ', hits hero for ' + str(enemy.attack(by='magic'))
+                    result += ', hits hero for ' + \
+                        str(enemy.attack(by='magic'))
                     result += '. Hero health is ' + str(hero.get_health())
                     print(result)
                 else:
@@ -213,10 +201,11 @@ class Dungeon:
                     moves = 'down'
                     enemy_y += 1
                 self.__map[enemy_y][enemy_x] = 'E'
-                print('Enemy moves one square ' + moves + ' in order to get to the hero. This is his move.')
+                print('Enemy moves one square ' + moves +
+                      ' in order to get to the hero. This is his move.')
             isFightingOn = hero.is_alive() and enemy.is_alive()
             if not isFightingOn:
-                    break
+                break
 
         # Someone has died, let's check who
         if not hero.is_alive():
@@ -275,3 +264,46 @@ class Dungeon:
 
 
 # move връща True ако се е преместил, False, ако не и -1 ако е умрял :D
+    def finding_enemy(cast_range):
+        for distance in range(0, cast_range + 1):
+
+            current_char_right = self.__map[
+                self.__hero_y][self.__hero_x + distance]
+
+            current_char_left = self.__map[
+                self.__hero_y][self.__hero_x - distance]
+
+            current_char_down = self.__map[
+                self.__hero_y + distance][self.__hero_x]
+
+            current_char_up = self.__map[
+                self.__hero_y - distance][self.__hero_x]
+
+            is_stopped_left = False
+            is_stopped_right = False
+            is_stopped_down = False
+            is_stopped_up = False
+
+            if current_char_left == self.enemy_char and not is_stopped_left:
+                enemy_y = self.__hero_y
+                enemy_x = self.__hero_x - distance
+                return [enemy_y, enemy_x]
+
+            if current_char_left == self.rocks_char:
+                is_stopped_left = True
+
+            if current_char_down == self.enemy_char and not is_stopped_down:
+                enemy_y = self.__hero_y + distance
+                enemy_x = self.__hero_x
+                return [enemy_y, enemy_x]
+
+            if current_char_down == self.rocks_char:
+                is_stopped_down = True
+
+            if current_char_up == self.enemy_char and not is_stopped_up:
+                enemy_y = self.__hero_y - distance
+                enemy_x = self.__hero_x
+                return [enemy_y, enemy_x]
+
+            if current_char_up == self.rocks_char:
+                is_stopped_up = True
