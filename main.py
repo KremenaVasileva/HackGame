@@ -4,7 +4,7 @@ from Dungeon import Dungeon
 
 if __name__ == '__main__':
     our_hero = Hero(name="Bron", title="Dragonslayer", health=100, mana=100, mana_regeneration_rate=2)
-    game_dungeon = Dungeon("level1.txt")
+    game_dungeon = Dungeon.load_from_file("level1.txt")
 
     print("Welcome to Dungeons and Pythons!")
     print("You can move your hero by using the W(up), A(left), S(down) and D(right) keys on your keyboard.")
