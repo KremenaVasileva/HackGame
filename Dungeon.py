@@ -53,9 +53,6 @@ class Dungeon:
             enemies = Dungeon.find_points(
                 Dungeon.enemy_char, level_map)
 
-            print(enemies)
-            print(spawning_points)
-
             return Dungeon(hero_x, hero_y, level_map, spawning_points, enemies)
 
     def __init__(self, x, y, level_map, spawning_points, enemies):
@@ -106,7 +103,6 @@ class Dungeon:
             return creature.current_weapon
 
     def hero_attack(self, hero):
-
         found_enemy = False
         enemy_x = -1
         enemy_y = -1
@@ -142,45 +138,7 @@ class Dungeon:
         enemy = Fights.make_enemy()
 
         # If we have found enemy, hero stats fighting until s.o. dies
-        isFightingOn = hero.is_alive() and enemy.is_alive()
-        while isFightingOn:
-
-            # First move: Hero attacks
-            fighting_tool = self.spell_or_weapon(hero)
-            if not on_same_field:
-                print(
-                    Fights.attack_by_spell(enemy, hero, 'Hero', 'Enemy', fighting_tool))
-            else:
-                if isinstance(fighting_tool, Spell):
-                    print(
-                        Fights.attack_by_spell(enemy, hero, 'Hero', 'Enemy', hero.current_spell))
-                else:
-                    print(
-                        Fights.attack_by_weapon(enemy, hero, 'Hero', 'Enemy', hero.current_weapon))
-
-            isFightingOn = hero.is_alive() and enemy.is_alive()
-            if not isFightingOn:
-                break
-
-            # Second move: enemy attacks or moves forward
-            # If enemy has reached hero:
-            if on_same_field:
-                fighting_tool = self.spell_or_weapon(enemy)
-                if isinstance(fighting_tool, Spell):
-                    print(
-                        Fights.attack_by_spell(hero, enemy, 'Enemy', 'Hero', enemy.current_spell))
-                else:
-                    print(self.attack_by_weapon(
-                        hero, enemy, 'Enemy', 'Enemy', enemy.current_spell))
-            else:
-                # Enemy has not reached hero, so he moves
-                enemy_cords = self.move_enemy(enemy_y, enemy_x)
-                enemy_y = enemy_cords[0]
-                enemy_x = enemy_cords[1]
-
-            isFightingOn = hero.is_alive() and enemy.is_alive()
-            if not isFightingOn:
-                break
+        Fights.attack_enemy(hero, enemy, on_same_field, self.__hero_y, self.__hero_x, enemy_y, enemy_x, self.__map)
 
         # Someone has died, let's check who
         if not hero.is_alive():
@@ -208,27 +166,20 @@ class Dungeon:
         else:
             raise Wrong_direction
 
-        is_dot = False
         is_treasure = False
         is_enemy = False
         is_gate = False
-        is_spawn_point = False
 
+        is_accessible = False
         is_in_matrix = self.__hero_x + \
             dx < len(self.__map[0]) and self.__hero_y + dy < len(self.__map)
-        if is_in_matrix:
-            is_dot = self.__map[
-                self.__hero_y + dy][self.__hero_x + dx] == Dungeon.path_char
-            is_treasure = self.__map[
-                self.__hero_y + dy][self.__hero_x + dx] == Dungeon.treasure_char
-            is_enemy = self.__map[
-                self.__hero_y + dy][self.__hero_x + dx] == Dungeon.enemy_char
-            is_gate = self.__map[
-                self.__hero_y + dy][self.__hero_x + dx] == Dungeon.gate_char
-            is_spawn_point = self.__map[
-                self.__hero_y + dy][self.__hero_x + dx] == Dungeon.spawning_char
 
-        is_accessible = is_dot or is_treasure or is_enemy or is_gate or is_spawn_point
+        if is_in_matrix:
+            checked_points = self.check_accessble_field(dx, dy)
+            is_accessible = checked_points[0]
+            is_treasure = checked_points[1]
+            is_enemy = checked_points[2]
+            is_gate = checked_points[3]
 
         if is_in_matrix and is_accessible:
             self.__map[self.__hero_y][self.__hero_x] = Dungeon.path_char
@@ -249,7 +200,6 @@ class Dungeon:
                 return True
 
             self.__map[self.__hero_y][self.__hero_x] = Dungeon.hero_char
-            # BLAAA
 
         return False
 
@@ -297,23 +247,18 @@ class Dungeon:
                 enemy_x = self.__hero_x
                 return [enemy_y, enemy_x]
 
+    def check_accessble_field(self, dx, dy):
+        is_dot = self.__map[
+            self.__hero_y + dy][self.__hero_x + dx] == Dungeon.path_char
+        is_treasure = self.__map[
+            self.__hero_y + dy][self.__hero_x + dx] == Dungeon.treasure_char
+        is_enemy = self.__map[
+            self.__hero_y + dy][self.__hero_x + dx] == Dungeon.enemy_char
+        is_gate = self.__map[
+            self.__hero_y + dy][self.__hero_x + dx] == Dungeon.gate_char
+        is_spawn_point = self.__map[
+            self.__hero_y + dy][self.__hero_x + dx] == Dungeon.spawning_char
 
-    def move_enemy(self, enemy_y, enemy_x):
-        moves = ''
-        self.__map[enemy_y][enemy_x] = Dungeon.path_char
-        if enemy_x > self.__hero_x:
-            moves = 'to the left'
-            enemy_x -= 1
-        elif enemy_x < self.__hero_x:
-            moves = 'to the right'
-            enemy_x += 1
-        elif enemy_y > self.__hero_y:
-            moves = 'up'
-            enemy_y -= 1
-        elif enemy_y < self.__hero_y:
-            moves = 'down'
-            enemy_y += 1
-        self.__map[enemy_y][enemy_x] = Dungeon.enemy_char
-        print('Enemy moves one square ' + moves +
-              ' in order to get to the hero. This is his move.')
-        return [enemy_y, enemy_x]
+        is_accessible = is_dot or is_treasure or is_enemy or is_gate or is_spawn_point
+
+        return [is_accessible, is_treasure, is_enemy, is_gate]
