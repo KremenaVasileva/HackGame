@@ -9,7 +9,6 @@ class Treasure_generator:
     def get_treasure(hero):
 
         rand = random.randint(1, 4)
-        rand = 2
         if rand == 1:
             # hero.get_starting_mana()
             mana_points = random.randint(10, 200)
